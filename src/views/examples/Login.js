@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*!
 
 =========================================================
@@ -17,6 +18,7 @@
 */
 
 // reactstrap components
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -29,13 +31,64 @@ import {
   InputGroupText,
   InputGroup,
   Row,
-  Col
+  Col,
+  Alert
 } from "reactstrap";
-
+import { _getByUsername } from "service/pembeli";
+import { useHistory } from "react-router-dom"
 const Login = () => {
+  const history = useHistory()
+  const [username, setUsername] = useState(true)
+  const [password, setPassword] = useState(true)
+  const [error, setError] = useState({ show: false, message: '' })
+
+  useEffect(() => {
+    let timeout
+    if (error.show) {
+      timeout = setInterval(() => {
+        setError({ show: false, message: '' })
+      }, 3000);
+    }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [error.show])
+
+  const getUsername = async () => {
+    const response = await _getByUsername(username)
+    console.log(response)
+    if (response.status === 200) {
+      if (response.data.password === password) {
+        localStorage.setItem('is_authenticated', true)
+        history.push('/admin')
+      } else {
+        setError({ show: true, message: 'Username or password not match!' })
+      }
+    } else {
+      setError({ show: true, message: response.message })
+    }
+  }
+
+  useEffect(() => {
+    const isAuthenticated = JSON.parse(localStorage.getItem('is_authenticated'))
+    if (isAuthenticated) {
+      history.push('/admin')
+    }
+  }, [history.location.pathname])
+
   return (
     <>
+
       <Col lg="5" md="7">
+        <div>
+          <Alert
+            color="danger"
+            fade={true}
+            isOpen={error.show}
+          >
+            {error.message}
+          </Alert>
+        </div>
         <Card className="bg-secondary shadow border-0">
           <CardHeader className="bg-transparent pb-5">
             <div className="text-muted text-center mt-2 mb-3">
@@ -91,9 +144,10 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
+                    placeholder="Username"
                     type="email"
                     autoComplete="new-email"
+                    onChange={e => setUsername(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -108,6 +162,7 @@ const Login = () => {
                     placeholder="Password"
                     type="password"
                     autoComplete="new-password"
+                    onChange={e => setPassword(e.target.value)}
                   />
                 </InputGroup>
               </FormGroup>
@@ -125,7 +180,7 @@ const Login = () => {
                 </label>
               </div>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button onClick={() => getUsername()} className="my-4" color="primary" type="button">
                   Sign in
                 </Button>
               </div>

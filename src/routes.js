@@ -46,7 +46,7 @@ var routes = [
     name: "Pembeli",
     icon: "ni ni-circle-08 text-pink",
     component: Pembeli,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/staff",
@@ -54,6 +54,13 @@ var routes = [
     icon: "ni ni-delivery-fast text-orange",
     component: Staff,
     layout: "/admin"
+  },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
+    layout: "/auth"
   },
   // {
   //   path: "/icons",
@@ -82,13 +89,6 @@ var routes = [
   //   icon: "ni ni-bullet-list-67 text-red",
   //   component: Tables,
   //   layout: "/admin"
-  // },
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   icon: "ni ni-key-25 text-info",
-  //   component: Login,
-  //   layout: "/auth"
   // },
   // {
   //   path: "/register",

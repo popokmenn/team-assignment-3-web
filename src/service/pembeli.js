@@ -14,6 +14,16 @@ export async function _getPembeli() {
     }
 }
 
+export async function _getByUsername(username) {
+    try {
+        const response = await axios.get(BASE_URL + '/api/auth/' + username);
+        return response
+    } catch (error) {
+        console.error(error);
+        return error
+    }
+}
+
 export async function _createPembeli(data) {
     try {
         const response = await axios.post(BASE_URL + '/api/pembeli', data);
